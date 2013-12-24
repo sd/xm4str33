@@ -48,8 +48,9 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   
-//  pattern = & RunPattern(ONE_SECOND, strip);
+  #ifdef DEBUG
   Serial.println("setup done");
+  #endif
 }
 
 #define COLOR_BLACK strip.Color(0, 0, 0)
@@ -82,31 +83,34 @@ const uint8_t PROGMEM gamma8[] = {
 };
 #define ADJUSTED_COLOR(R,G,B) strip.Color(pgm_read_byte(&gamma8[R]), pgm_read_byte(&gamma8[G]), pgm_read_byte(&gamma8[B]))
 
+unsigned long (*patternFunc)(unsigned long now, unsigned long freq, unsigned long prevStep) = &pattern_RainbowFart;
+unsigned long patternFrequency = FOUR_SECONDS;
+unsigned long patternStep = 0;
+
 void loop() {
-  Serial.print("loop   - ");
-  unsigned long now = millis();
-  unsigned long memo = 0;
   
-//  memo = pattern->runOnce(now, memo);
-  memo = pattern_RainbowCycle(now, FOUR_SECONDS, memo);
-//  memo = pattern_RainbowFart(now, ONE_SECONDS, memo);
+  unsigned long now = 0;
+  
+  while(true) {
+    #ifdef DEBUG
+    Serial.print("loop   - ");
+    #endif
+    
+    now = millis();
+    patternStep = (*patternFunc)(now, patternFrequency, patternStep);
 
-//memo = pattern_Run(now, TWO_SECONDS, memo, COLOR_BLUE, COLOR_RED);
-//  memo = pattern_Blink(now, ONE_SECONDS, memo, COLOR_BLACK, COLOR_YELLOW);
-//  memo = pattern_Glow(now, ONE_SECONDS, memo, COLOR_BLUE, COLOR_RED);
-
-//  rainbow(10);
-  #ifdef DEBUG
-  unsigned long t = millis() - now;
-  Serial.print("Time: ");
-  Serial.print(now);
-  Serial.print(" step: ");
-  Serial.print(memo);
-  Serial.print(" (");
-  Serial.print(t);
-  Serial.print("ms proc time) ");
-  Serial.println("");
-  #endif
+    #ifdef DEBUG
+    unsigned long t = millis() - now;
+    Serial.print("Time: ");
+    Serial.print(now);
+    Serial.print(" step: ");
+    Serial.print(patternStep);
+    Serial.print(" (");
+    Serial.print(t);
+    Serial.print("ms proc time) ");
+    Serial.println("");
+    #endif
+  }
 }
 
 
