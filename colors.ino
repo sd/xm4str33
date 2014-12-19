@@ -18,8 +18,24 @@ const uint8_t PROGMEM gamma8[] = {
     218,220,223,225,227,230,232,235,237,240,242,245,247,250,252,255
 };
 
-uint32_t Gamma(uint32_t red, uint32_t green, uint32_t blue) {
+uint32_t Gamma(uint8_t red, uint8_t green, uint8_t blue) {
   return strip.Color(pgm_read_byte(&gamma8[red]), pgm_read_byte(&gamma8[green]), pgm_read_byte(&gamma8[blue]));
+}
+
+uint32_t Gradient(uint32_t color0, uint32_t color1, int percent) {
+  uint8_t r0 = (uint8_t)(color0 >> 16),
+          g0 = (uint8_t)(color0 >>  8),
+          b0 = (uint8_t) color0;
+
+  uint8_t r1 = (uint8_t)(color1 >> 16),
+          g1 = (uint8_t)(color1 >>  8),
+          b1 = (uint8_t) color1;
+  
+  return strip.Color(
+    ((r0 * percent) / 100) + ((r1 * (100 - percent)) / 100),
+    ((g0 * percent) / 100) + ((g1 * (100 - percent)) / 100),
+    ((b0 * percent) / 100) + ((b1 * (100 - percent)) / 100)
+  );
 }
 
 // Input a value 0 to 255 to get a color value.
@@ -35,3 +51,4 @@ uint32_t Wheel(byte WheelPos) {
    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
 }
+

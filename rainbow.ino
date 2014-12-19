@@ -1,4 +1,5 @@
 unsigned long  pattern_RainbowCycle(unsigned long now, unsigned long freq, unsigned long prevOffset) {
+  freq = freq * 2;
   unsigned long offset = CALCULATED_STEP(now, freq, 256);
   
 //  if (offset != prevOffset) {
@@ -39,4 +40,5 @@ unsigned long  pattern_RainbowFart(unsigned long now, unsigned long freq, unsign
   
   return thisStep;
 }
+
 
